@@ -9,13 +9,225 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      news: {
+        Row: {
+          created_at: string
+          full_text: string
+          id: string
+          published_at: string
+          title: string
+          updated_at: string
+          url: string
+          user_repo_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_text: string
+          id?: string
+          published_at: string
+          title: string
+          updated_at?: string
+          url: string
+          user_repo_id: string
+        }
+        Update: {
+          created_at?: string
+          full_text?: string
+          id?: string
+          published_at?: string
+          title?: string
+          updated_at?: string
+          url?: string
+          user_repo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_user_repo_id_fkey"
+            columns: ["user_repo_id"]
+            isOneToOne: false
+            referencedRelation: "user_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          github_connected: boolean | null
+          id: string
+          role: string
+          updated_at: string
+          vercel_connected: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          github_connected?: boolean | null
+          id: string
+          role?: string
+          updated_at?: string
+          vercel_connected?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          github_connected?: boolean | null
+          id?: string
+          role?: string
+          updated_at?: string
+          vercel_connected?: boolean | null
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          created_at: string
+          id: string
+          question: string
+          updated_at: string
+          user_repo_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          question: string
+          updated_at?: string
+          user_repo_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          question?: string
+          updated_at?: string
+          user_repo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_user_repo_id_fkey"
+            columns: ["user_repo_id"]
+            isOneToOne: false
+            referencedRelation: "user_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      repositories: {
+        Row: {
+          admin_id: string
+          created_at: string
+          description: string | null
+          github_repo_url: string
+          id: string
+          is_template: boolean | null
+          repo_name: string
+          updated_at: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          description?: string | null
+          github_repo_url: string
+          id?: string
+          is_template?: boolean | null
+          repo_name: string
+          updated_at?: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          description?: string | null
+          github_repo_url?: string
+          id?: string
+          is_template?: boolean | null
+          repo_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_repositories: {
+        Row: {
+          created_at: string
+          deployed: boolean | null
+          github_repo_url: string | null
+          id: string
+          original_repo_id: string
+          repo_name: string
+          subtitle: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+          vercel_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          deployed?: boolean | null
+          github_repo_url?: string | null
+          id?: string
+          original_repo_id: string
+          repo_name: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          vercel_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          deployed?: boolean | null
+          github_repo_url?: string | null
+          id?: string
+          original_repo_id?: string
+          repo_name?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          vercel_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_repositories_original_repo_id_fkey"
+            columns: ["original_repo_id"]
+            isOneToOne: false
+            referencedRelation: "repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: { _user_id: string; _role: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

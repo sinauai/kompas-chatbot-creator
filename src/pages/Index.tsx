@@ -1,15 +1,25 @@
 
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Rocket, Shield, Code, Zap, Users } from "lucide-react";
-import AuthModal from "@/components/auth/AuthModal";
-import Header from "@/components/layout/Header";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user && profile) {
+      if (profile.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/user/dashboard');
+      }
+    }
+  }, [user, profile, loading, navigate]);
 
   const features = [
     {
@@ -44,14 +54,57 @@ const Index = () => {
     }
   ];
 
-  const handleAuthClick = (mode: 'signin' | 'signup') => {
-    setAuthMode(mode);
-    setAuthModalOpen(true);
+  const handleAuthClick = () => {
+    navigate('/auth');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
-      <Header onAuthClick={handleAuthClick} />
+      {/* Header */}
+      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Bot className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold">Chatbot Kompas</span>
+            </div>
+            
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
+                Fitur
+              </a>
+              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+                Harga
+              </a>
+              <a href="#docs" className="text-muted-foreground hover:text-foreground transition-colors">
+                Dokumentasi
+              </a>
+              <a href="#support" className="text-muted-foreground hover:text-foreground transition-colors">
+                Support
+              </a>
+            </nav>
+            
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" onClick={handleAuthClick}>
+                Masuk
+              </Button>
+              <Button onClick={handleAuthClick}>
+                Daftar
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
       
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-20 pb-16 text-center">
@@ -73,7 +126,7 @@ const Index = () => {
             <Button 
               size="lg" 
               className="px-8 py-6 text-lg font-semibold"
-              onClick={() => handleAuthClick('signup')}
+              onClick={handleAuthClick}
             >
               Mulai Gratis
             </Button>
@@ -81,7 +134,7 @@ const Index = () => {
               variant="outline" 
               size="lg" 
               className="px-8 py-6 text-lg font-semibold"
-              onClick={() => handleAuthClick('signin')}
+              onClick={handleAuthClick}
             >
               Masuk ke Akun
             </Button>
@@ -109,7 +162,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="features" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Fitur Unggulan
@@ -152,7 +205,7 @@ const Index = () => {
             <Button 
               size="lg" 
               className="px-8 py-6 text-lg font-semibold"
-              onClick={() => handleAuthClick('signup')}
+              onClick={handleAuthClick}
             >
               Daftar Sekarang - Gratis!
             </Button>
@@ -171,13 +224,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-
-      <AuthModal 
-        open={authModalOpen}
-        onOpenChange={setAuthModalOpen}
-        mode={authMode}
-        onModeChange={setAuthMode}
-      />
     </div>
   );
 };
